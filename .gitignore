@@ -1,0 +1,10 @@
+.idea/
+.idea_modules/
+project/project/
+project/target/
+target/
+.ensime
+shall-be.more.sublime-project
+.DS_Store
+/shall-be.more.sublime-workspace
+/.project

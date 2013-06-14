@@ -6,5 +6,6 @@ target/
 .ensime
 shall-be.more.sublime-project
 .DS_Store
-/shall-be.more.sublime-workspace
-/.project
+shall-be.more.sublime-workspace
+.project
+.ensime_lucene/

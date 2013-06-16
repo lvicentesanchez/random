@@ -34,7 +34,7 @@ class DemoServiceActor extends Actor with DemoService {
 }
 
 // this trait defines our service behavior independently from the service actor
-trait DemoService extends HttpService {
+trait DemoService extends HttpService with UserModule {
 
   // we use the enclosing ActorContext's or ActorSystem's dispatcher for our Futures and Scheduler
   implicit def executionContext = actorRefFactory.dispatcher
@@ -43,7 +43,7 @@ trait DemoService extends HttpService {
     get {
       path("") {
         respondWithMediaType(`application/json`) {
-          complete(User("Pedro", 34, "agorer"))
+          complete(User("Luis", 34, "agorer", Address("Fake Street", 111)))
         }
       }
     }

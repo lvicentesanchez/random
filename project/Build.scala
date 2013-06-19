@@ -40,20 +40,21 @@ object RootBuild extends Build {
   )
 
   lazy val dependencies = Seq(
-    "com.typesafe.akka" %% "akka-actor"      % "2.2+",
-    "com.typesafe.akka" %% "akka-slf4j"      % "2.2+",
-    "io.argonaut"       %% "argonaut"        % "6.0-SNAPSHOT" changing(),
-    "io.spray"          %  "spray-can"       % "1.2+",
-    "io.spray"          %  "spray-caching"   % "1.2+",
-    "io.spray"          %  "spray-routing"   % "1.2+",
-    "org.scalaz"        %% "scalaz-core"     % "7.+",
+    "com.digital-achiever" %% "brando"          % "0.0.4",
+    "com.typesafe.akka"    %% "akka-actor"      % "2.2+",
+    "com.typesafe.akka"    %% "akka-slf4j"      % "2.2+",
+    "io.argonaut"          %% "argonaut"        % "6.0-SNAPSHOT" changing(),
+    "io.spray"             %  "spray-can"       % "1.2+",
+    //"io.spray"             %  "spray-caching"   % "1.2+",
+    "io.spray"             %  "spray-routing"   % "1.2+",
+    "org.scalaz"           %% "scalaz-core"     % "7.+",
     // Test libraries
-    "io.spray"          %  "spray-testkit"   % "1.2+",
-    "org.specs2"        %% "specs2"          % "2.0-RC2" % "test",
+    "io.spray"             %  "spray-testkit"   % "1.2+" % "test",
+    "org.specs2"           %% "specs2"          % "2.0-RC2" % "test",
     // Bump dependencies
-    "ch.qos.logback"    %  "logback-classic" % "1.+",
-    "ch.qos.logback"    %  "logback-core"    % "1.+",
-    "org.slf4j"         %  "slf4j-api"       % "1.+"
+    "ch.qos.logback"       %  "logback-classic" % "1.+",
+    "ch.qos.logback"       %  "logback-core"    % "1.+",
+    "org.slf4j"            %  "slf4j-api"       % "1.+"
   )
 
 
@@ -97,6 +98,7 @@ object RootBuild extends Build {
       .setPreference(SpacesWithinPatternBinders, true)
 
   lazy val resolverSettings = Seq(
+    "chris dinn repository" at "http://chrisdinn.github.com/releases/",
     "sonatype oss releases" at "http://oss.sonatype.org/content/repositories/releases/",
     "sonatype oss snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     "spray nightlies" at "http://nightlies.spray.io/",

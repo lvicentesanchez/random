@@ -1,23 +1,12 @@
 package spray.examples
 
-import java.io.File
-import org.parboiled.common.FileUtils
-import scala.concurrent.duration._
-import akka.actor.{ Props, Actor }
-import akka.pattern.ask
-import spray.routing.{ HttpService, RequestContext }
-import spray.routing.directives.CachingDirectives
-import spray.can.server.Stats
-import spray.can.Http
-import spray.httpx.marshalling.Marshaller
-import spray.httpx.encoding.Gzip
-import spray.util._
-import spray.http._
-import MediaTypes._
-import CachingDirectives._
-
+import akka.actor.Actor
 import argonaut._
-import Argonaut._
+import argonaut.Argonaut._
+import spray.routing.HttpService
+import spray.httpx.marshalling.Marshaller
+import spray.http._
+import spray.http.MediaTypes._
 
 // we don't implement our route structure directly in the service actor because
 // we want to be able to test it independently, without having to spin up an actor

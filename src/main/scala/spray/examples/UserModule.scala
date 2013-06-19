@@ -5,7 +5,7 @@ trait UserModule extends AddressModule {
 
   object User {
     import argonaut._
-    import Argonaut._
+    import argonaut.Argonaut._
 
     implicit val codec = casecodec4(User.apply, User.unapply)("name", "age", "profession", "address")
   }

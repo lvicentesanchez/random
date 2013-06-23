@@ -45,7 +45,7 @@ object RootBuild extends Build {
     "com.typesafe.akka"    %% "akka-slf4j"      % "2.2.0-RC1",
     "io.argonaut"          %% "argonaut"        % "6.0-RC3",
     "io.spray"             %  "spray-can"       % "1.2+",
-    //"io.spray"             %  "spray-caching"   % "1.2+",
+    "io.spray"             %% "spray-json"      % "1.2.5",
     "io.spray"             %  "spray-routing"   % "1.2+",
     "org.scalaz"           %% "scalaz-core"     % "7.0.0",
     // Test libraries

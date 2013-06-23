@@ -1,7 +1,6 @@
 package spray.examples
 
 import argonaut._
-import Argonaut._
 import spray.http.ContentTypes
 import spray.httpx.marshalling.Marshaller
 

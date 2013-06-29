@@ -8,12 +8,14 @@ import sbtassembly.Plugin._
 import AssemblyKeys._
 // sbt-revolver
 import spray.revolver.RevolverPlugin._
+// sbt-dependecy-graph
+import net.virtualvoid.sbt.graph.Plugin._
 
 object RootBuild extends Build {
   lazy val main = Project(
     id = "main",
     base = file("."),
-    settings = Defaults.defaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings) settings (
+    settings = Defaults.defaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings ++ graphSettings) settings (
       resolvers ++= resolverSettings,
       libraryDependencies ++= dependencies,
       ScalariformKeys.preferences := formattingSettings,
@@ -22,7 +24,6 @@ object RootBuild extends Build {
       excludedJars in assembly <<= (fullClasspath in assembly) map ( _ filter ( _.data.getName == "scala-compiler.jar" ) ),
       jarName in assembly <<= (name, version) map ( (n, v) => "%s-%s.jar".format(n, v) )
     )
-
 
   lazy val appName = "shall-be.more"
 
@@ -40,9 +41,9 @@ object RootBuild extends Build {
   )
 
   lazy val dependencies = Seq(
-    "com.digital-achiever" %% "brando"          % "0.0.4",
-    "com.typesafe.akka"    %% "akka-actor"      % "2.2.0-RC1",
-    "com.typesafe.akka"    %% "akka-slf4j"      % "2.2.0-RC1",
+    "com.digital-achiever" %% "brando"          % "0.0.6",
+    "com.typesafe.akka"    %% "akka-actor"      % "2.2.0-RC2",
+    "com.typesafe.akka"    %% "akka-slf4j"      % "2.2.0-RC2",
     "io.argonaut"          %% "argonaut"        % "6.0-RC3",
     "io.spray"             %  "spray-can"       % "1.2+",
     "io.spray"             %% "spray-json"      % "1.2.5",

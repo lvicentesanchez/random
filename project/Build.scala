@@ -48,7 +48,7 @@ object RootBuild extends Build {
     "io.spray"             %  "spray-can"       % "1.2+",
     "io.spray"             %% "spray-json"      % "1.2.5",
     "io.spray"             %  "spray-routing"   % "1.2+",
-    "org.scalaz"           %% "scalaz-core"     % "7.0.0",
+    "org.scalaz"           %% "scalaz-core"     % "7.0.1",
     // Test libraries
     "io.spray"             %  "spray-testkit"   % "1.2+" % "test",
     "org.specs2"           %% "specs2"          % "2.0" % "test",

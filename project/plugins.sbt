@@ -1,9 +1,11 @@
 logLevel := Level.Warn
 
-// Idea plugins
+// Resolvers
 //
 resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 
+// Idea plugins
+//
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.4.0")
 
 // Sublime2 + Ensime plugins

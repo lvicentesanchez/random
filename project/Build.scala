@@ -41,14 +41,15 @@ object RootBuild extends Build {
   )
 
   lazy val dependencies = Seq(
-    "com.digital-achiever" %% "brando"          % "0.0.6",
+    "com.digital-achiever" %% "brando"          % "0.0.7",
     "com.typesafe.akka"    %% "akka-actor"      % "2.2.0-RC2",
     "com.typesafe.akka"    %% "akka-slf4j"      % "2.2.0-RC2",
     "io.argonaut"          %% "argonaut"        % "6.0-RC3",
     "io.spray"             %  "spray-can"       % "1.2+",
     "io.spray"             %% "spray-json"      % "1.2.5",
     "io.spray"             %  "spray-routing"   % "1.2+",
-    "org.scalaz"           %% "scalaz-core"     % "7.0.1",
+    "org.scalaz"           %% "scalaz-core"     % "7.0.2",
+    "org.scalaz"           %% "scalaz-effect"   % "7.0.2",
     // Test libraries
     "io.spray"             %  "spray-testkit"   % "1.2+" % "test",
     "org.specs2"           %% "specs2"          % "2.0" % "test",

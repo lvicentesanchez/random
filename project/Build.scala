@@ -51,8 +51,9 @@ object RootBuild extends Build {
     "org.scalaz"           %% "scalaz-core"     % "7.0.2",
     "org.scalaz"           %% "scalaz-effect"   % "7.0.2",
     // Test libraries
-    "io.spray"             %  "spray-testkit"   % "1.2+" % "test",
-    "org.specs2"           %% "specs2"          % "2.1" % "test",
+    "org.scalacheck"       %% "scalacheck"      % "1.10.1" % "test",
+    "io.spray"             %  "spray-testkit"   % "1.2+"   % "test",
+    "org.specs2"           %% "specs2"          % "2.1.1"  % "test",
     // Bump dependencies
     "ch.qos.logback"       %  "logback-classic" % "1.0.13",
     "ch.qos.logback"       %  "logback-core"    % "1.0.13",

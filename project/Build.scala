@@ -44,7 +44,7 @@ object RootBuild extends Build {
     "com.digital-achiever" %% "brando"          % "0.1.0",
     "com.typesafe.akka"    %% "akka-actor"      % "2.2.0",
     "com.typesafe.akka"    %% "akka-slf4j"      % "2.2.0",
-    "io.argonaut"          %% "argonaut"        % "6.0-RC3",
+    "io.argonaut"          %% "argonaut"        % "6.0",
     "io.spray"             %  "spray-can"       % "1.2+",
     "io.spray"             %% "spray-json"      % "1.2.5",
     "io.spray"             %  "spray-routing"   % "1.2+",

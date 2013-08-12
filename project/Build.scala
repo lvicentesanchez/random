@@ -41,23 +41,23 @@ object RootBuild extends Build {
   )
 
   lazy val dependencies = Seq(
-    "com.digital-achiever" %% "brando"          % "0.1.0",
-    "com.typesafe.akka"    %% "akka-actor"      % "2.2.0",
-    "com.typesafe.akka"    %% "akka-slf4j"      % "2.2.0",
-    "io.argonaut"          %% "argonaut"        % "6.0",
-    "io.spray"             %  "spray-can"       % "1.2+",
-    "io.spray"             %% "spray-json"      % "1.2.5",
-    "io.spray"             %  "spray-routing"   % "1.2+",
-    "org.scalaz"           %% "scalaz-core"     % "7.0.2",
-    "org.scalaz"           %% "scalaz-effect"   % "7.0.2",
+    "com.typesafe.akka"    %% "akka-actor"         % "2.2.0",
+    "com.typesafe.akka"    %% "akka-slf4j"         % "2.2.0",
+    "io.argonaut"          %% "argonaut"           % "6.0",
+    "io.spray"             %  "spray-can"          % "1.2+",
+    "io.spray"             %% "spray-json"         % "1.2.5",
+    "io.spray"             %  "spray-routing"      % "1.2+",
+    "org.scalaz"           %% "scalaz-core"        % "7.0.3",
+    "org.scalaz"           %% "scalaz-effect"      % "7.0.3",
+    "org.typelevel"        %% "scalaz-contrib-210" % "0.1.5",
     // Test libraries
-    "org.scalacheck"       %% "scalacheck"      % "1.10.1" % "test",
-    "io.spray"             %  "spray-testkit"   % "1.2+"   % "test",
-    "org.specs2"           %% "specs2"          % "2.1.1"  % "test",
+    "org.scalacheck"       %% "scalacheck"         % "1.10.1" % "test",
+    "io.spray"             %  "spray-testkit"      % "1.2+"   % "test",
+    "org.specs2"           %% "specs2"             % "2.1.1"  % "test",
     // Bump dependencies
-    "ch.qos.logback"       %  "logback-classic" % "1.0.13",
-    "ch.qos.logback"       %  "logback-core"    % "1.0.13",
-    "org.slf4j"            %  "slf4j-api"       % "1.7.5"
+    "ch.qos.logback"       %  "logback-classic"    % "1.0.13",
+    "ch.qos.logback"       %  "logback-core"       % "1.0.13",
+    "org.slf4j"            %  "slf4j-api"          % "1.7.5"
   )
 
 

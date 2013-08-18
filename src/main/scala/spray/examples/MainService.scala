@@ -7,9 +7,7 @@ trait MainService extends HttpService with UserModule with ArgonautSupport {
   val route = {
     get {
       path("") {
-        respondWithMediaType(`application/json`) {
-          complete(User("Luis", 34, "agorer", Address("Fake Street", 111)))
-        }
+        complete(User("Luis", 34, "agorer", Address("Fake Street", 111)))
       }
     }
   }

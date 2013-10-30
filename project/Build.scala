@@ -33,7 +33,7 @@ object RootBuild extends Build {
     name := appName,
     organization := "more.shall-be",
     version := appVersion,
-    scalaVersion := "2.10.3-RC1"
+    scalaVersion := "2.10.3"
   )
 
   lazy val compileSettings = Seq(
@@ -41,17 +41,17 @@ object RootBuild extends Build {
   )
 
   lazy val dependencies = Seq(
-    "com.typesafe.akka"    %% "akka-actor"         % "2.2.0",
-    "com.typesafe.akka"    %% "akka-slf4j"         % "2.2.0",
+    "com.typesafe.akka"    %% "akka-actor"         % "2.2.3",
+    "com.typesafe.akka"    %% "akka-slf4j"         % "2.2.3",
+    "com.typesafe.play"    %% "play-json"          % "2.2.0",
     "io.argonaut"          %% "argonaut"           % "6.0.1",
-    "io.spray"             %  "spray-can"          % "1.2+",
-    "io.spray"             %% "spray-json"         % "1.2.5",
-    "io.spray"             %  "spray-routing"      % "1.2+",
+    "io.spray"             %  "spray-can"          % "1.2-RC1",
+    "io.spray"             %  "spray-routing"      % "1.2-RC1",
     "org.scalaz"           %% "scalaz-core"        % "7.0.3",
     "org.scalaz"           %% "scalaz-effect"      % "7.0.3",
     "org.typelevel"        %% "scalaz-contrib-210" % "0.1.5",
     // Test libraries
-    "io.spray"             %  "spray-testkit"      % "1.2+"   % "test",
+    "io.spray"             %  "spray-testkit"      % "1.2-RC1"   % "test",
     "org.scalacheck"       %% "scalacheck"         % "1.10.1" % "test",
     "org.specs2"           %% "specs2"             % "2.1.1"  % "test",
     // Bump dependencies

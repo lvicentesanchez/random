@@ -7,7 +7,7 @@ import spray.can.Http
 object Boot extends App {
   implicit val system = ActorSystem("shall-be-more")
 
-  val service = system.actorOf(Props[MainServiceActor], "main-service")
+  val handler = system.actorOf(Props[Handler])
 
-  IO(Http) ! Http.Bind(service, "0.0.0.0", port = 8080)
+  IO(Http) ! Http.Bind(handler, "0.0.0.0", port = 8080)
 }

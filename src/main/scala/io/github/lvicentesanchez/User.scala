@@ -1,7 +1,7 @@
-package spray.examples
+package io.github.lvicentesanchez
 
+import argonaut.Argonaut._
 import argonaut._
-import Argonaut._
 
 case class User(name: String, age: Int, profession: String, address: Address)
 

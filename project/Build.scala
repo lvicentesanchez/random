@@ -15,12 +15,12 @@ object RootBuild extends Build {
   lazy val main = Project(
     id = "main",
     base = file("."),
-    settings = Defaults.defaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings ++ graphSettings) settings (
+    settings = Defaults.coreDefaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings ++ graphSettings) settings (
       resolvers ++= resolverSettings,
       libraryDependencies ++= dependencies,
       ScalariformKeys.preferences := formattingSettings,
       javaOptions in Revolver.reStart ++= forkedJvmOption,
-      mainClass in assembly := Option("spray.examples.Boot"),
+      mainClass in assembly := Option("io.github.lvicentesanchez.Boot"),
       excludedJars in assembly <<= (fullClasspath in assembly) map ( _ filter ( _.data.getName == "scala-compiler.jar" ) ),
       jarName in assembly <<= (name, version) map ( (n, v) => "%s-%s.jar".format(n, v) )
     )
@@ -31,7 +31,7 @@ object RootBuild extends Build {
 
   lazy val buildSettings = Seq(
     name := appName,
-    organization := "more.shall-be",
+    organization := "io.github.lvicentesancheze",
     version := appVersion,
     scalaVersion := "2.11.2"
   )

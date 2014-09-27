@@ -1,14 +1,14 @@
-package spray.examples
+package io.github.lvicentesanchez
 
-import akka.http.unmarshalling.Unmarshal
-import argonaut._, Argonaut._
 import akka.actor.ActorSystem
 import akka.http.Http
 import akka.http.server._
+import akka.http.unmarshalling.Unmarshal
 import akka.io.IO
+import akka.pattern.ask
 import akka.stream.FlowMaterializer
 import akka.util.Timeout
-import akka.pattern.ask
+
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 

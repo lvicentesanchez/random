@@ -1,10 +1,12 @@
-package spray.examples
+package io.github.lvicentesanchez
 
-import akka.stream.FlowMaterializer
-import argonaut._, Argonaut._
-import akka.http.model._
 import akka.http.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
-import akka.http.unmarshalling.{ Unmarshaller, PredefinedFromEntityUnmarshallers }
+import akka.http.model._
+import akka.http.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
+import akka.stream.FlowMaterializer
+import argonaut.Argonaut._
+import argonaut._
+
 import scala.concurrent.{ ExecutionContext, Future }
 import scalaz.{ -\/, \/- }
 

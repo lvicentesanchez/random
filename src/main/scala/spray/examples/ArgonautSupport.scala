@@ -1,38 +1,22 @@
 package spray.examples
 
 import argonaut._
-import Argonaut._
-import akka.http.model.{ ContentTypes, ContentTypeRange, HttpCharsets, HttpEntity, MediaTypes }
-import akka.http.marshalling.Marshaller
-import akka.http.unmarshalling.{ Deserialized, MalformedContent, Unmarshaller }
+import akka.http.model._
+import akka.http.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
 
-trait ArgonautMarshallers {
-  implicit val utf8StringUnmarshaller = Unmarshaller[HttpEntity, String](entity => entity.toStrict())
-    def apply(entity: HttpEntity) = Right(entity.asString(defaultCharset = HttpCharsets.`UTF-8`))
-  }
+import scala.concurrent.ExecutionContext
 
-  implicit val argonautJsonMarshaller: Marshaller[Json] =
-    Marshaller.delegate[Json, String](ContentTypes.`application/json`)(param ⇒
-      s""")]}',
-       |${param.nospaces}
-      """.stripMargin
-    )
+trait ArgonautMarshallers extends PredefinedToResponseMarshallers {
+  implicit val argonautJsonMarshaller: Marshaller[Json, RequestEntity] =
+    Marshaller.withOpenCharset(MediaTypes.`application/json`) { (s, cs) ⇒ HttpEntity(ContentType(MediaTypes.`application/json`, cs), s.nospaces) }
 
-  implicit def argonautTMarshaller[T](implicit ev: CodecJson[T]): Marshaller[T] =
-    Marshaller.delegate[T, String](ContentTypes.`application/json`)(param ⇒
-      s""")]}',
-    	 |${ev.encode(param).nospaces}
-      """.stripMargin
-    )
+  implicit def argonautTEntityMarshaller[T](implicit ec: ExecutionContext, ev: EncodeJson[T]): Marshaller[T, RequestEntity] =
+    argonautJsonMarshaller.compose[T](ev(_))
 
-  implicit def argonautListTMarshaller[T](implicit ev: EncodeJson[List[T]]): Marshaller[List[T]] =
-    Marshaller.delegate[List[T], String](ContentTypes.`application/json`)(param ⇒
-      s""")]}',
-       |${ev.encode(param).nospaces}
-      """.stripMargin
-    )
+  implicit def argonautListTEntityMarshaller[T](implicit ec: ExecutionContext, ev: EncodeJson[List[T]]): Marshaller[List[T], RequestEntity] =
+    argonautJsonMarshaller.compose[List[T]](ev(_))
 
-  implicit val argonautJsonUnmarshaller: Unmarshaller[Json] =
+  /*implicit val argonautJsonUnmarshaller: Unmarshaller[Json] =
     delegate[String, Json](MediaTypes.`application/json`)(string ⇒
       JsonParser.parse(string).toEither.left.map(error ⇒ MalformedContent(error))
     )
@@ -51,7 +35,7 @@ trait ArgonautMarshallers {
     new SimpleUnmarshaller[B] {
       val canUnmarshalFrom = unmarshalFrom
       def unmarshal(entity: HttpEntity) = ma(entity).right.flatMap(a ⇒ f(a))
-    }
+    }*/
 }
 
 object ArgonautMarshallers extends ArgonautMarshallers

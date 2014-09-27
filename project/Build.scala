@@ -42,7 +42,7 @@ object RootBuild extends Build {
 
   lazy val dependencies = Seq(
     "io.argonaut"       %% "argonaut"               % "6.1-M4",
-    "com.typesafe.akka" %% "akka-http-experimental" % "0.7",
+    "com.typesafe.akka" %% "akka-http-experimental" % "0.8",
     "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 

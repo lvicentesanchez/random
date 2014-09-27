@@ -17,7 +17,9 @@ object Boot extends App with ScalaRoutingDSL with ArgonautMarshallers {
   implicit val context: ExecutionContext = system.dispatcher
   implicit val materializer: FlowMaterializer = FlowMaterializer()
   implicit val askTimeout: Timeout = 500.millis
+
   val bindingFuture = (IO(Http) ? Http.Bind(interface = "localhost", port = 8080)).mapTo[Http.ServerBinding]
+
   val route = {
     post {
       path("") { ctxt ⇒

@@ -1,5 +1,6 @@
 package spray.examples
 
+import akka.http.unmarshalling.Unmarshal
 import argonaut._, Argonaut._
 import akka.actor.ActorSystem
 import akka.http.Http
@@ -14,13 +15,17 @@ import scala.concurrent.duration._
 object Boot extends App with ScalaRoutingDSL with ArgonautMarshallers {
   implicit val system: ActorSystem = ActorSystem("shall-be-more")
   implicit val context: ExecutionContext = system.dispatcher
-  implicit val materializer: FlowMaterializer = FlowMaterializer()(system)
+  implicit val materializer: FlowMaterializer = FlowMaterializer()
   implicit val askTimeout: Timeout = 500.millis
   val bindingFuture = (IO(Http) ? Http.Bind(interface = "localhost", port = 8080)).mapTo[Http.ServerBinding]
   val route = {
     post {
-      path("") {
-        complete(User("Luis", 35, "scalar", Address("johnson", 69)))
+      path("") { ctxt ⇒
+        ctxt.complete(
+          Unmarshal(ctxt.request.entity).to[User].map(
+            user ⇒ user.copy(age = user.age * 2)
+          )
+        )
       }
     }
   }

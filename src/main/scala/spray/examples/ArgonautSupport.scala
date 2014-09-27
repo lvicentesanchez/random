@@ -1,12 +1,14 @@
 package spray.examples
 
-import argonaut._
+import akka.stream.FlowMaterializer
+import argonaut._, Argonaut._
 import akka.http.model._
 import akka.http.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
+import akka.http.unmarshalling.{ Unmarshaller, PredefinedFromEntityUnmarshallers }
+import scala.concurrent.{ ExecutionContext, Future }
+import scalaz.{ -\/, \/- }
 
-import scala.concurrent.ExecutionContext
-
-trait ArgonautMarshallers extends PredefinedToResponseMarshallers {
+trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with PredefinedToResponseMarshallers {
   implicit val argonautJsonMarshaller: Marshaller[Json, RequestEntity] =
     Marshaller.withOpenCharset(MediaTypes.`application/json`) { (s, cs) ⇒ HttpEntity(ContentType(MediaTypes.`application/json`, cs), s.nospaces) }
 
@@ -16,26 +18,23 @@ trait ArgonautMarshallers extends PredefinedToResponseMarshallers {
   implicit def argonautListTEntityMarshaller[T](implicit ec: ExecutionContext, ev: EncodeJson[List[T]]): Marshaller[List[T], RequestEntity] =
     argonautJsonMarshaller.compose[List[T]](ev(_))
 
-  /*implicit val argonautJsonUnmarshaller: Unmarshaller[Json] =
-    delegate[String, Json](MediaTypes.`application/json`)(string ⇒
-      JsonParser.parse(string).toEither.left.map(error ⇒ MalformedContent(error))
-    )
+  implicit def argonautJsonUnmarshaller(implicit ec: ExecutionContext, fm: FlowMaterializer): Unmarshaller[HttpEntity, Json] =
+    stringUnmarshaller.map(Parse.parse).flatMap {
+      case -\/(string) ⇒ Future.failed(new Throwable(string))
+      case \/-(value) ⇒ Future.successful(value)
+    }
 
-  implicit def argonautTUnmarshaller[T](implicit ev: DecodeJson[T]): Unmarshaller[T] =
-    delegate[String, T](MediaTypes.`application/json`)(string ⇒
-      string.decodeEither[T].toEither.left.map(error ⇒ MalformedContent(error))
-    )
+  implicit def argonautTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[T], fm: FlowMaterializer): Unmarshaller[HttpEntity, T] =
+    stringUnmarshaller.map(_.decodeEither[T]).flatMap {
+      case -\/(string) ⇒ Future.failed(new Throwable(string))
+      case \/-(value) ⇒ Future.successful(value)
+    }
 
-  implicit def argonautListTUnmarshaller[T](implicit ev: DecodeJson[List[T]]): Unmarshaller[List[T]] =
-    delegate[String, List[T]](MediaTypes.`application/json`)(string ⇒
-      string.decodeEither[List[T]].toEither.left.map(error ⇒ MalformedContent(error))
-    )
-
-  private def delegate[A, B](unmarshalFrom: ContentTypeRange*)(f: A ⇒ Deserialized[B])(implicit ma: Unmarshaller[A]): Unmarshaller[B] =
-    new SimpleUnmarshaller[B] {
-      val canUnmarshalFrom = unmarshalFrom
-      def unmarshal(entity: HttpEntity) = ma(entity).right.flatMap(a ⇒ f(a))
-    }*/
+  implicit def argonautListTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[List[T]], fm: FlowMaterializer): Unmarshaller[HttpEntity, List[T]] =
+    stringUnmarshaller.map(_.decodeEither[List[T]]).flatMap {
+      case -\/(string) ⇒ Future.failed(new Throwable(string))
+      case \/-(value) ⇒ Future.successful(value)
+    }
 }
 
 object ArgonautMarshallers extends ArgonautMarshallers

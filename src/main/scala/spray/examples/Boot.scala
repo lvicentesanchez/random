@@ -20,7 +20,7 @@ object Boot extends App with ScalaRoutingDSL with ArgonautMarshallers {
 
   val bindingFuture = (IO(Http) ? Http.Bind(interface = "localhost", port = 8080)).mapTo[Http.ServerBinding]
 
-  val route = {
+  val route: Route = {
     post {
       path("") { ctxt ⇒
         ctxt.complete(

@@ -2,12 +2,12 @@ package spray.examples
 
 import argonaut._
 import Argonaut._
-import spray.http.{ ContentTypes, ContentTypeRange, HttpCharsets, HttpEntity, MediaTypes }
-import spray.httpx.marshalling.Marshaller
-import spray.httpx.unmarshalling.{ Deserialized, MalformedContent, SimpleUnmarshaller, Unmarshaller }
+import akka.http.model.{ ContentTypes, ContentTypeRange, HttpCharsets, HttpEntity, MediaTypes }
+import akka.http.marshalling.Marshaller
+import akka.http.unmarshalling.{ Deserialized, MalformedContent, Unmarshaller }
 
 trait ArgonautMarshallers {
-  implicit val utf8StringUnmarshaller = new Unmarshaller[String] {
+  implicit val utf8StringUnmarshaller = Unmarshaller[HttpEntity, String](entity => entity.toStrict())
     def apply(entity: HttpEntity) = Right(entity.asString(defaultCharset = HttpCharsets.`UTF-8`))
   }
 

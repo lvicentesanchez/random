@@ -6,8 +6,9 @@ import akka.http.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller
 import akka.http.util.{ FastFuture ⇒ FF }
 import akka.stream.FlowMaterializer
 import argonaut._, Argonaut._
-import scala.concurrent.ExecutionContext
-import scalaz.{ -\/, \/- }
+import io.github.lvicentesanchez.lambdas.EitherL
+import scala.concurrent.{ ExecutionContext, Future }
+import scalaz.~>
 
 trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with PredefinedToResponseMarshallers {
   implicit val argonautJsonMarshaller: Marshaller[Json, RequestEntity] =
@@ -20,22 +21,27 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
     argonautJsonMarshaller.compose[List[T]](ev(_))
 
   implicit def argonautJsonUnmarshaller(implicit ec: ExecutionContext, fm: FlowMaterializer): Unmarshaller[HttpEntity, Json] =
-    stringUnmarshaller.map(Parse.parse).flatMap {
-      case -\/(string) ⇒ FF.failed(new Throwable(string))
-      case \/-(value) ⇒ FF.successful(value)
-    }
+    stringUnmarshaller
+      .map(Parse.parse)
+      .flatMap(disjunctionFutureNT(_))
 
   implicit def argonautTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[T], fm: FlowMaterializer): Unmarshaller[HttpEntity, T] =
-    stringUnmarshaller.map(_.decodeEither[T]).flatMap {
-      case -\/(string) ⇒ FF.failed(new Throwable(string))
-      case \/-(value) ⇒ FF.successful(value)
-    }
+    stringUnmarshaller
+      .map(_.decodeEither[T])
+      .flatMap(disjunctionFutureNT(_))
 
   implicit def argonautListTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[List[T]], fm: FlowMaterializer): Unmarshaller[HttpEntity, List[T]] =
-    stringUnmarshaller.map(_.decodeEither[List[T]]).flatMap {
-      case -\/(string) ⇒ FF.failed(new Throwable(string))
-      case \/-(value) ⇒ FF.successful(value)
-    }
+    stringUnmarshaller
+      .map(_.decodeEither[List[T]])
+      .flatMap(disjunctionFutureNT(_))
+
+  private val disjunctionFutureNT: EitherL[String]#T ~> Future = new (EitherL[String]#T ~> Future) {
+    def apply[A](fa: EitherL[String]#T[A]): Future[A] =
+      fa.fold(
+        error ⇒ FF.failed(new Throwable(error)),
+        FF.successful
+      )
+  }
 }
 
 object ArgonautMarshallers extends ArgonautMarshallers

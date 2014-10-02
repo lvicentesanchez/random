@@ -33,7 +33,7 @@ object RootBuild extends Build {
     name := appName,
     organization := "io.github.lvicentesancheze",
     version := appVersion,
-    scalaVersion := "2.11.2"
+    scalaVersion := "2.11.3-typelevel"
   )
 
   lazy val compileSettings = Seq(
@@ -87,11 +87,9 @@ object RootBuild extends Build {
       .setPreference(SpacesWithinPatternBinders, true)
 
   lazy val resolverSettings = Seq(
-    "chris dinn repository" at "http://chrisdinn.github.com/releases/",
+    Resolver.mavenLocal,
     "sonatype oss releases" at "http://oss.sonatype.org/content/repositories/releases/",
     "sonatype oss snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-    "spray nightlies" at "http://nightlies.spray.io/",
-    "spray releases" at "http://repo.spray.io",
     "typesafe releases" at "http://repo.typesafe.com/typesafe/releases/",
     "typesafe snapshots" at "http://repo.typesafe.com/typesafe/snapshots/"
   )

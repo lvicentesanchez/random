@@ -8,7 +8,7 @@ import akka.stream.FlowMaterializer
 import argonaut._, Argonaut._
 import io.github.lvicentesanchez.lambdas.EitherL
 import scala.concurrent.{ ExecutionContext, Future }
-import scalaz.~>
+import scalaz.{ \/ , ~>}
 
 trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with PredefinedToResponseMarshallers {
   implicit val argonautJsonMarshaller: Marshaller[Json, RequestEntity] =
@@ -35,8 +35,8 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
       .map(_.decodeEither[List[T]])
       .flatMap(disjunctionFutureNT(_))
 
-  private val disjunctionFutureNT: EitherL[String]#T ~> Future = new (EitherL[String]#T ~> Future) {
-    def apply[A](fa: EitherL[String]#T[A]): Future[A] =
+  private val disjunctionFutureNT: ([A] => String \/ A) ~> Future = new (([A] => String \/ A) ~> Future) {
+    def apply[A](fa: String \/ A): Future[A] =
       fa.fold(
         error ⇒ FF.failed(new Throwable(error)),
         FF.successful

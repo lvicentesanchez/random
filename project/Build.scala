@@ -89,8 +89,6 @@ object RootBuild extends Build {
   lazy val resolverSettings = Seq(
     Resolver.mavenLocal,
     "sonatype oss releases" at "http://oss.sonatype.org/content/repositories/releases/",
-    "sonatype oss snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-    "typesafe releases" at "http://repo.typesafe.com/typesafe/releases/",
-    "typesafe snapshots" at "http://repo.typesafe.com/typesafe/snapshots/"
+    "typesafe releases" at "http://repo.typesafe.com/typesafe/releases/"
   )
 }

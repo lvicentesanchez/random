@@ -1,10 +1,12 @@
+.DS_Store
 .idea/
 .idea_modules/
+.ensime
+.ensime_lucene/
+.ensime_session
+shall-be.more.sublime-project
+shall-be.more.sublime-workspace
 project/project/
 project/target/
+sources/
 target/
-.ensime
-shall-be.more.sublime-project
-.DS_Store
-/shall-be.more.sublime-workspace
-/.project

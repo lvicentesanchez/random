@@ -8,21 +8,22 @@ import sbtassembly.Plugin._
 import AssemblyKeys._
 // sbt-revolver
 import spray.revolver.RevolverPlugin._
+// sbt-dependecy-graph
+import net.virtualvoid.sbt.graph.Plugin._
 
 object RootBuild extends Build {
   lazy val main = Project(
     id = "main",
     base = file("."),
-    settings = Defaults.defaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings) settings (
+    settings = Defaults.coreDefaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings ++ graphSettings) settings (
       resolvers ++= resolverSettings,
       libraryDependencies ++= dependencies,
       ScalariformKeys.preferences := formattingSettings,
       javaOptions in Revolver.reStart ++= forkedJvmOption,
-      mainClass in assembly := Option("spray.examples.Boot"),
+      mainClass in assembly := Option("io.github.lvicentesanchez.Boot"),
       excludedJars in assembly <<= (fullClasspath in assembly) map ( _ filter ( _.data.getName == "scala-compiler.jar" ) ),
       jarName in assembly <<= (name, version) map ( (n, v) => "%s-%s.jar".format(n, v) )
     )
-
 
   lazy val appName = "shall-be.more"
 
@@ -30,9 +31,9 @@ object RootBuild extends Build {
 
   lazy val buildSettings = Seq(
     name := appName,
-    organization := "more.shall-be",
+    organization := "io.github.lvicentesancheze",
     version := appVersion,
-    scalaVersion := "2.10.2"
+    scalaVersion := "2.11.2"
   )
 
   lazy val compileSettings = Seq(
@@ -40,19 +41,9 @@ object RootBuild extends Build {
   )
 
   lazy val dependencies = Seq(
-    "com.typesafe.akka" %% "akka-actor"      % "2.2+",
-    "com.typesafe.akka" %% "akka-slf4j"      % "2.2+",
-    "io.argonaut"       %% "argonaut"        % "6.0-SNAPSHOT" changing(),
-    "io.spray"          %  "spray-can"       % "1.2+",
-    "io.spray"          %  "spray-routing"   % "1.2+",
-    "org.scalaz"        %% "scalaz-core"     % "7.+",
-    // Test libraries
-    "io.spray"          %  "spray-testkit"   % "1.2+",
-    "org.specs2"        %% "specs2"          % "2.0-RC2" % "test",
-    // Bump dependencies
-    "ch.qos.logback"    %  "logback-classic" % "1.+",
-    "ch.qos.logback"    %  "logback-core"    % "1.+",
-    "org.slf4j"         %  "slf4j-api"       % "1.+"
+    "io.argonaut"       %% "argonaut"               % "6.1-M4",
+    "com.typesafe.akka" %% "akka-http-experimental" % "0.8",
+    "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 
 
@@ -96,6 +87,7 @@ object RootBuild extends Build {
       .setPreference(SpacesWithinPatternBinders, true)
 
   lazy val resolverSettings = Seq(
+    "chris dinn repository" at "http://chrisdinn.github.com/releases/",
     "sonatype oss releases" at "http://oss.sonatype.org/content/repositories/releases/",
     "sonatype oss snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
     "spray nightlies" at "http://nightlies.spray.io/",

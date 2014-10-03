@@ -1,4 +1,4 @@
 shall-be.more
 =============
 
-Server-side rendering vs Client-side rendering (using spray)
+We are using the typelevel.scala compiler, you should either clone the repository and publish it locally or wait until there is an official release.

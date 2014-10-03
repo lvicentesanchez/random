@@ -35,7 +35,7 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
       .map(_.decodeEither[List[T]])
       .flatMap(disjunctionFutureNT(_))
 
-  private val disjunctionFutureNT: ([A] => String \/ A) ~> Future = new (([A] => String \/ A) ~> Future) {
+  private val disjunctionFutureNT: ([x] => String \/ x) ~> Future = new (([x] => String \/ x) ~> Future) {
     def apply[A](fa: String \/ A): Future[A] =
       fa.fold(
         error ⇒ FF.failed(new Throwable(error)),

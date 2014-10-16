@@ -6,7 +6,7 @@ import akka.http.server._
 import akka.http.unmarshalling.Unmarshal
 import akka.io.IO
 import akka.pattern.ask
-import akka.stream.FlowMaterializer
+import akka.stream.scaladsl2.FlowMaterializer
 import akka.util.Timeout
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._

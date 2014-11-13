@@ -4,7 +4,7 @@ import akka.http.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
 import akka.http.model._
 import akka.http.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
 import akka.http.util.{ FastFuture ⇒ FF }
-import akka.stream.scaladsl2.FlowMaterializer
+import akka.stream.FlowMaterializer
 import argonaut._, Argonaut._
 import io.github.lvicentesanchez.lambdas.EitherL
 import scala.concurrent.{ ExecutionContext, Future }

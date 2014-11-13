@@ -33,7 +33,7 @@ object RootBuild extends Build {
     name := appName,
     organization := "io.github.lvicentesancheze",
     version := appVersion,
-    scalaVersion := "2.11.2"
+    scalaVersion := "2.11.4"
   )
 
   lazy val compileSettings = Seq(
@@ -42,7 +42,7 @@ object RootBuild extends Build {
 
   lazy val dependencies = Seq(
     "io.argonaut"       %% "argonaut"               % "6.1-M4",
-    "com.typesafe.akka" %% "akka-http-experimental" % "0.9",
+    "com.typesafe.akka" %% "akka-http-experimental" % "0.11",
     "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 

@@ -24,12 +24,13 @@ object Boot extends App with Directives with ArgonautMarshallers {
       case Request(user, fn) ⇒ fn(user)
     }
 
-  val mmap: MaterializedMap = source.
-    map {
-      case request @ Request(user, _) ⇒ request.copy(user = user.copy(age = user.age * 2))
-    }.
-    to(complete).
-    run()
+  val mmap: MaterializedMap =
+    source.
+      map {
+        case request @ Request(user, _) ⇒ request.copy(user = user.copy(age = user.age * 2))
+      }.
+      to(complete).
+      run()
   val aref: ActorRef = mmap.get(source)
 
   val route: Route =

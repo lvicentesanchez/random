@@ -1,9 +1,10 @@
-package io.github.lvicentesanchez
+package io.github.lvicentesanchez.marshalling
 
 import akka.http.marshalling.Marshaller
 import akka.http.unmarshalling.Unmarshaller
+
 import scala.concurrent.ExecutionContext
-import scalaz.{ -\/, \/-, \/ }
+import scalaz.{ -\/, \/, \/- }
 
 trait ScalazMarshallers {
   implicit def disjunctionMarshaller[A, B, C](implicit ma: Marshaller[A, C], mb: Marshaller[B, C]): Marshaller[A \/ B, C] =

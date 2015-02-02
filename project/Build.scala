@@ -33,16 +33,16 @@ object RootBuild extends Build {
     name := appName,
     organization := "io.github.lvicentesancheze",
     version := appVersion,
-    scalaVersion := "2.11.4"
+    scalaVersion := "2.11.5"
   )
 
   lazy val compileSettings = Seq(
-    scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-feature")
+    scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "utf8", "-feature")//, "-Xlog-implicits")
   )
 
   lazy val dependencies = Seq(
-    "io.argonaut"       %% "argonaut"               % "6.1-M4",
-    "com.typesafe.akka" %% "akka-http-experimental" % "0.11",
+    "io.argonaut"       %% "argonaut"               % "6.1-M5",
+    "com.typesafe.akka" %% "akka-http-experimental" % "1.0-M2",
     "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 

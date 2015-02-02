@@ -1,18 +1,20 @@
-package io.github.lvicentesanchez
+package io.github.lvicentesanchez.marshalling
 
 import akka.http.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
 import akka.http.model._
 import akka.http.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
 import akka.http.util.{ FastFuture ⇒ FF }
 import akka.stream.FlowMaterializer
-import argonaut._, Argonaut._
+import argonaut._
 import io.github.lvicentesanchez.lambdas.EitherL
+
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.control.NoStackTrace
 import scalaz.~>
 
 trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with PredefinedToResponseMarshallers {
-  implicit val argonautJsonMarshaller: Marshaller[Json, RequestEntity] =
-    Marshaller.opaque { json ⇒ HttpEntity(ContentType(MediaTypes.`application/json`, HttpCharsets.`UTF-8`), json.nospaces) }
+  implicit def argonautJsonMarshaller(implicit ec: ExecutionContext): Marshaller[Json, RequestEntity] =
+    Marshaller.StringMarshaller.wrap(ContentTypes.`application/json`)(_.nospaces)
 
   implicit def argonautTMarshaller[T](implicit ec: ExecutionContext, ev: EncodeJson[T]): Marshaller[T, RequestEntity] =
     argonautJsonMarshaller.compose[T](ev(_))
@@ -22,26 +24,22 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
 
   implicit def argonautJsonUnmarshaller(implicit ec: ExecutionContext, fm: FlowMaterializer): Unmarshaller[HttpEntity, Json] =
     stringUnmarshaller
-      .map(Parse.parse)
-      .flatMap(disjunctionFutureNT(_))
+      .flatMap(str ⇒ disjunctionFutureNT(Parse.parse(str)))
 
-  implicit def argonautTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[T], fm: FlowMaterializer): Unmarshaller[RequestEntity, T] =
+  implicit def argonautTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[T], fm: FlowMaterializer): Unmarshaller[HttpEntity, T] =
     stringUnmarshaller
-      .map(_.decodeEither[T])
-      .flatMap(disjunctionFutureNT(_))
+      .flatMap(str ⇒ disjunctionFutureNT(Parse.decodeEither[T](str)))
 
-  implicit def argonautListTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[List[T]], fm: FlowMaterializer): Unmarshaller[RequestEntity, List[T]] =
+  implicit def argonautListTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[List[T]], fm: FlowMaterializer): Unmarshaller[HttpEntity, List[T]] =
     stringUnmarshaller
-      .map(_.decodeEither[List[T]])
-      .flatMap(disjunctionFutureNT(_))
+      .flatMap(str ⇒ disjunctionFutureNT(Parse.decodeEither[List[T]](str)))
 
   private val disjunctionFutureNT: EitherL[String]#T ~> Future = new (EitherL[String]#T ~> Future) {
     def apply[A](fa: EitherL[String]#T[A]): Future[A] =
       fa.fold(
-        error ⇒ FF.failed(new Throwable(error)),
+        error ⇒ FF.failed(new Throwable(error) with NoStackTrace),
         FF.successful
       )
   }
 }
-
 object ArgonautMarshallers extends ArgonautMarshallers

@@ -1,35 +1,47 @@
 package io.github.lvicentesanchez
 
-import akka.actor.ActorSystem
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.Http
 import akka.http.server._
-import akka.http.unmarshalling.Unmarshal
-import akka.io.IO
-import akka.pattern.ask
 import akka.stream.FlowMaterializer
-import akka.util.Timeout
+import akka.stream.scaladsl._
+import io.github.lvicentesanchez.marshalling.ArgonautMarshallers
+import io.github.lvicentesanchez.models.{ User, Request }
+import io.github.lvicentesanchez.streams.sources.UnboundedPublisher
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
 
-object Boot extends App with ScalaRoutingDSL with ArgonautMarshallers {
-  implicit val system: ActorSystem = ActorSystem("shall-be-more")
-  implicit val context: ExecutionContext = system.dispatcher
-  implicit val materializer: FlowMaterializer = FlowMaterializer()
-  implicit val askTimeout: Timeout = 1.second
+object Boot extends App with Directives with ArgonautMarshallers {
+  implicit val system: ActorSystem = ActorSystem("random")
+  implicit val asynchronous: ExecutionContext = system.dispatcher
+  implicit val materialiser: FlowMaterializer = FlowMaterializer()
+  val binding = Http().bind(interface = "0.0.0.0", port = 9000)
 
-  val bindingFuture = (IO(Http) ? Http.Bind(interface = "localhost", port = 8080)).mapTo[Http.ServerBinding]
+  val source: PropsSource[Request] =
+    Source(UnboundedPublisher.props[Request])
 
-  val route: Route = {
+  val complete: Sink[Request] =
+    Sink.foreach {
+      case Request(user, fn) ⇒ fn(user)
+    }
+
+  val mmap: MaterializedMap = source.
+    map {
+      case request @ Request(user, _) ⇒ request.copy(user = user.copy(age = user.age * 2))
+    }.
+    to(complete).
+    run()
+  val aref: ActorRef = mmap.get(source)
+
+  val route: Route =
     post {
-      path("") { ctxt ⇒
-        ctxt.complete(
-          Unmarshal(ctxt.request.entity).to[User].map(
-            user ⇒ user.copy(age = user.age * 2)
+      path("") {
+        entity(as[User]) { user ⇒
+          completeWith(instanceOf[User])(fn ⇒
+            aref ! Request(user, fn)
           )
-        )
+        }
       }
     }
-  }
 
-  handleConnections(bindingFuture).withRoute(route)
+  binding.startHandlingWith(route)
 }

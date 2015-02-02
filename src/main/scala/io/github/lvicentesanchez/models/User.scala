@@ -1,4 +1,4 @@
-package io.github.lvicentesanchez
+package io.github.lvicentesanchez.models
 
 import argonaut.Argonaut._
 import argonaut._

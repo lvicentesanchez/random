@@ -1,4 +1,4 @@
-shall-be.more
-=============
+random
+======
 
-Server-side rendering vs Client-side rendering (using spray)
+playing around with akka-http & akka-stream.

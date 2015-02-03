@@ -2,13 +2,19 @@ package io.github.lvicentesanchez
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.http.Http
+import akka.http.Http.IncomingConnection
+import akka.http.model.{ StatusCodes, HttpResponse }
 import akka.http.server._
 import akka.stream.FlowMaterializer
 import akka.stream.scaladsl._
+import akka.stream.stage.Stage
 import io.github.lvicentesanchez.marshalling.ArgonautMarshallers
 import io.github.lvicentesanchez.models.{ User, Request }
+import io.github.lvicentesanchez.streams.flexi.DisjunctionRoute
 import io.github.lvicentesanchez.streams.source.UnboundedPublisher
+import io.github.lvicentesanchez.streams.stage.SafetyStage
 import scala.concurrent.ExecutionContext
+import scalaz.\/
 
 object Boot extends App with Directives with ArgonautMarshallers {
   implicit val system: ActorSystem = ActorSystem("random")
@@ -27,7 +33,8 @@ object Boot extends App with Directives with ArgonautMarshallers {
   val mmap: MaterializedMap =
     source.
       map {
-        case request @ Request(user @ User(_, age, _, _), _) ⇒ request.copy(user = user.copy(age = age * 2))
+        case request @ Request(user @ User(_, age, _, _), _) ⇒
+          request.copy(user = user.copy(age = age * 2))
       }.
       to(complete).
       run()
@@ -44,5 +51,12 @@ object Boot extends App with Directives with ArgonautMarshallers {
       }
     }
 
-  binding.startHandlingWith(route)
+  import FlowGraphImplicits._
+
+  FlowGraph { implicit builder ⇒
+    val disj: DisjunctionRoute[IncomingConnection, IncomingConnection] = new DisjunctionRoute[IncomingConnection, IncomingConnection]("safe-disjunction")
+    binding.connections.transform(() ⇒ SafetyStage(100)) ~> disj.in
+    disj.left ~> Sink.foreach[IncomingConnection](_ handleWithSyncHandler (_ ⇒ HttpResponse(StatusCodes.ServiceUnavailable)))
+    disj.right ~> Sink.foreach[IncomingConnection](_ handleWith route)
+  }.run()
 }

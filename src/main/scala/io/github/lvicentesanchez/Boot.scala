@@ -27,7 +27,7 @@ object Boot extends App with Directives with ArgonautMarshallers {
   val mmap: MaterializedMap =
     source.
       map {
-        case request @ Request(user, _) ⇒ request.copy(user = user.copy(age = user.age * 2))
+        case request @ Request(user @ User(_, age, _, _), _) ⇒ request.copy(user = user.copy(age = age * 2))
       }.
       to(complete).
       run()

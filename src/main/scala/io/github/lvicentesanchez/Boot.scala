@@ -7,7 +7,7 @@ import akka.stream.FlowMaterializer
 import akka.stream.scaladsl._
 import io.github.lvicentesanchez.marshalling.ArgonautMarshallers
 import io.github.lvicentesanchez.models.{ User, Request }
-import io.github.lvicentesanchez.streams.sources.UnboundedPublisher
+import io.github.lvicentesanchez.streams.source.UnboundedPublisher
 import scala.concurrent.ExecutionContext
 
 object Boot extends App with Directives with ArgonautMarshallers {

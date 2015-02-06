@@ -19,7 +19,8 @@ object RootBuild extends Build {
       resolvers ++= resolverSettings,
       libraryDependencies ++= dependencies,
       ScalariformKeys.preferences := formattingSettings,
-      javaOptions in Revolver.reStart ++= forkedJvmOption,
+      fork in run := true,
+      javaOptions in run ++= forkedJvmOption,
       mainClass in assembly := Option("io.github.lvicentesanchez.Boot"),
       excludedJars in assembly <<= (fullClasspath in assembly) map ( _ filter ( _.data.getName == "scala-compiler.jar" ) ),
       jarName in assembly <<= (name, version) map ( (n, v) => "%s-%s.jar".format(n, v) )
@@ -42,7 +43,7 @@ object RootBuild extends Build {
 
   lazy val dependencies = Seq(
     "io.argonaut"       %% "argonaut"               % "6.1-M5",
-    "com.typesafe.akka" %% "akka-http-experimental" % "1.0-M2",
+    "com.typesafe.akka" %% "akka-http-experimental" % "1.0-M3",
     "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 

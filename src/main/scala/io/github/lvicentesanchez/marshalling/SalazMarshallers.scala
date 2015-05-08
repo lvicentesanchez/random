@@ -1,7 +1,7 @@
 package io.github.lvicentesanchez.marshalling
 
-import akka.http.marshalling.Marshaller
-import akka.http.unmarshalling.Unmarshaller
+import akka.http.scaladsl.marshalling.Marshaller
+import akka.http.scaladsl.unmarshalling.Unmarshaller
 
 import scala.concurrent.ExecutionContext
 import scalaz.{ -\/, \/, \/- }

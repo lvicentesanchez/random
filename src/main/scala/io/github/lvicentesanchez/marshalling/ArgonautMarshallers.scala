@@ -1,9 +1,9 @@
 package io.github.lvicentesanchez.marshalling
 
-import akka.http.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
-import akka.http.model._
-import akka.http.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
-import akka.http.util.{ FastFuture ⇒ FF }
+import akka.http.scaladsl.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
+import akka.http.scaladsl.util.{ FastFuture ⇒ FF }
 import akka.stream.FlowMaterializer
 import argonaut._
 import io.github.lvicentesanchez.lambdas.EitherL

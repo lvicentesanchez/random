@@ -1,36 +1,42 @@
 package io.github.lvicentesanchez
 
 import akka.actor.ActorSystem
-import akka.http.Http
-import akka.http.server._
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.server._
+import akka.stream.scaladsl.{ Source, Sink, Flow }
 import akka.stream.{ ActorFlowMaterializer, FlowMaterializer }
-import akka.stream.scaladsl._
 import io.github.lvicentesanchez.marshalling.ArgonautMarshallers
 import io.github.lvicentesanchez.models.User
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
+import scala.io.StdIn
 
 object Boot extends App with Directives with ArgonautMarshallers {
   implicit val system: ActorSystem = ActorSystem("random")
   implicit val asynchronous: ExecutionContext = system.dispatcher
   implicit val materialiser: FlowMaterializer = ActorFlowMaterializer()
-  val binding = Http().bind(interface = "0.0.0.0", port = 9000)
-  val transform: Flow[User, User] =
+  val transform: Flow[User, User, Unit] =
     Flow[User].
       map {
         case user @ User(_, age, _, _) ⇒
           user.copy(age = age * 2)
       }
-
   val route: Route =
     post {
       path("") {
         entity(as[User])(user ⇒
           complete(
-            Source.single(user).via(transform).runWith(Sink.head)
+            Source.single(user).via(transform).runWith[Future[User]](Sink.head)
           )
         )
       }
     }
 
-  binding.startHandlingWith(route)
+  val binding: Future[Http.ServerBinding] = Http().bindAndHandle(route, interface = "0.0.0.0", port = 9000)
+
+  StdIn.readLine()
+
+  binding.flatMap(_.unbind()).onComplete { _ ⇒
+    system.shutdown()
+    system.awaitTermination()
+  }
 }

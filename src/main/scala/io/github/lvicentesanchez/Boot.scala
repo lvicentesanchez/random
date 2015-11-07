@@ -4,16 +4,16 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server._
 import akka.stream.scaladsl.{ Source, Sink, Flow }
-import akka.stream.{ ActorFlowMaterializer, FlowMaterializer }
+import akka.stream.{ ActorMaterializer, Materializer }
 import io.github.lvicentesanchez.marshalling.ArgonautMarshallers
 import io.github.lvicentesanchez.models.User
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.io.StdIn
 
 object Boot extends App with Directives with ArgonautMarshallers {
   implicit val system: ActorSystem = ActorSystem("random")
   implicit val asynchronous: ExecutionContext = system.dispatcher
-  implicit val materialiser: FlowMaterializer = ActorFlowMaterializer()
+  implicit val materialiser: Materializer = ActorMaterializer()
   val transform: Flow[User, User, Unit] =
     Flow[User].
       map {

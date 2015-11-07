@@ -4,7 +4,7 @@ import akka.http.scaladsl.marshalling.{ Marshaller, PredefinedToResponseMarshall
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
 import akka.http.scaladsl.util.{ FastFuture ⇒ FF }
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import argonaut._
 import io.github.lvicentesanchez.lambdas.EitherL
 
@@ -22,17 +22,17 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
   implicit def argonautListTMarshaller[T](implicit ec: ExecutionContext, ev: EncodeJson[List[T]]): Marshaller[List[T], RequestEntity] =
     argonautJsonMarshaller.compose[List[T]](ev(_))
 
-  implicit def argonautJsonUnmarshaller(implicit ec: ExecutionContext, fm: FlowMaterializer): Unmarshaller[HttpEntity, Json] =
+  implicit def argonautJsonUnmarshaller(implicit fm: Materializer): Unmarshaller[HttpEntity, Json] =
     stringUnmarshaller
-      .flatMap(str ⇒ disjunctionFutureNT(Parse.parse(str)))
+      .flatMap(ec ⇒ fm ⇒ str ⇒ disjunctionFutureNT(Parse.parse(str)))
 
-  implicit def argonautTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[T], fm: FlowMaterializer): Unmarshaller[HttpEntity, T] =
+  implicit def argonautTUnmarshaller[T](implicit ev: DecodeJson[T], fm: Materializer): Unmarshaller[HttpEntity, T] =
     stringUnmarshaller
-      .flatMap(str ⇒ disjunctionFutureNT(Parse.decodeEither[T](str)))
+      .flatMap(ec ⇒ fm ⇒ str ⇒ disjunctionFutureNT(Parse.decodeEither[T](str)))
 
-  implicit def argonautListTUnmarshaller[T](implicit ec: ExecutionContext, ev: DecodeJson[List[T]], fm: FlowMaterializer): Unmarshaller[HttpEntity, List[T]] =
+  implicit def argonautListTUnmarshaller[T](implicit ev: DecodeJson[List[T]], fm: Materializer): Unmarshaller[HttpEntity, List[T]] =
     stringUnmarshaller
-      .flatMap(str ⇒ disjunctionFutureNT(Parse.decodeEither[List[T]](str)))
+      .flatMap(ec ⇒ fm ⇒ str ⇒ disjunctionFutureNT(Parse.decodeEither[List[T]](str)))
 
   private val disjunctionFutureNT: EitherL[String]#T ~> Future = new (EitherL[String]#T ~> Future) {
     def apply[A](fa: EitherL[String]#T[A]): Future[A] =

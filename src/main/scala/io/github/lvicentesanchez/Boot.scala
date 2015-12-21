@@ -17,7 +17,7 @@ object Boot extends App with Directives with ArgonautMarshallers {
   val transform: Flow[User, User, Unit] =
     Flow[User].
       map {
-        case user @ User(_, age, _, _) ⇒
+        case user @ User(_, age) ⇒
           user.copy(age = age * 2)
       }
   val route: Route =
@@ -26,8 +26,7 @@ object Boot extends App with Directives with ArgonautMarshallers {
         entity(as[User])(user ⇒
           complete(
             Source.single(user).via(transform).runWith[Future[User]](Sink.head)
-          )
-        )
+          ))
       }
     }
 

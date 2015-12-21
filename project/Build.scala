@@ -8,14 +8,12 @@ import sbtassembly.Plugin._
 import AssemblyKeys._
 // sbt-revolver
 import spray.revolver.RevolverPlugin._
-// sbt-dependecy-graph
-import net.virtualvoid.sbt.graph.Plugin._
 
 object RootBuild extends Build {
   lazy val main = Project(
     id = "main",
     base = file("."),
-    settings = Defaults.coreDefaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings ++ graphSettings) settings (
+    settings = Defaults.coreDefaultSettings ++ buildSettings ++ compileSettings ++ scalariformSettings ++ Revolver.settings ++ assemblySettings) settings (
       resolvers ++= resolverSettings,
       libraryDependencies ++= dependencies,
       ScalariformKeys.preferences := formattingSettings,
@@ -44,7 +42,7 @@ object RootBuild extends Build {
 
   lazy val dependencies = Seq(
     "io.argonaut"       %% "argonaut"               % "6.1",
-    "com.typesafe.akka" %% "akka-http-experimental" % "2.0-M1",
+    "com.typesafe.akka" %% "akka-http-experimental" % "2.0-M2",
     "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 

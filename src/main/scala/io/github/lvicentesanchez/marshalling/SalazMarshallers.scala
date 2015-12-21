@@ -14,8 +14,7 @@ trait ScalazMarshallers {
     Unmarshaller[A, B \/ C](implicit ec ⇒ value ⇒
       ua(value).map(-\/(_)).recoverWith {
         case _ ⇒ ub(value).map(\/-(_))
-      }
-    )
+      })
 }
 
 object ScalazMarshallers extends ScalazMarshallers

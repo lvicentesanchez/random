@@ -14,23 +14,18 @@ object Boot extends App with Directives with ArgonautMarshallers {
   implicit val system: ActorSystem = ActorSystem("random")
   implicit val asynchronous: ExecutionContext = system.dispatcher
   implicit val materialiser: Materializer = ActorMaterializer()
-  val transform: Flow[User, User, Unit] =
-    Flow[User].
-      map {
-        case user @ User(_, age) ⇒
-          user.copy(age = age * 2)
-      }
+
   val route: Route =
     post {
       path("") {
-        entity(as[User])(user ⇒
-          complete(
-            Source.single(user).via(transform).runWith[Future[User]](Sink.head)
-          ))
+        entity(as[User]) {
+          case user @ User(_, age) ⇒ complete(user.copy(age = age * 2))
+        }
       }
     }
 
-  val binding: Future[Http.ServerBinding] = Http().bindAndHandle(route, interface = "0.0.0.0", port = 9000)
+  val binding: Future[Http.ServerBinding] =
+    Http().bindAndHandle(route, interface = "0.0.0.0", port = 9000)
 
   StdIn.readLine()
 

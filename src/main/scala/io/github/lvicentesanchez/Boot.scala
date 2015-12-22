@@ -19,7 +19,7 @@ object Boot extends App with Directives with ArgonautMarshallers {
     post {
       path("") {
         entity(as[User]) {
-          case user @ User(_, age) ⇒ complete(user.copy(age = age * 2))
+          case User(name, age) ⇒ complete(User(name, age * 2))
         }
       }
     }

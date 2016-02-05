@@ -24,20 +24,20 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
 
   implicit def argonautJsonUnmarshaller(implicit fm: Materializer): Unmarshaller[HttpEntity, Json] =
     stringUnmarshaller
-      .flatMap(ec ⇒ fm ⇒ str ⇒ disjunctionFutureNT(Parse.parse(str)))
+      .flatMap(ec => fm => str => disjunctionFutureNT(Parse.parse(str)))
 
   implicit def argonautTUnmarshaller[T](implicit ev: DecodeJson[T], fm: Materializer): Unmarshaller[HttpEntity, T] =
     stringUnmarshaller
-      .flatMap(ec ⇒ fm ⇒ str ⇒ disjunctionFutureNT(Parse.decodeEither[T](str)))
+      .flatMap(ec => fm => str => disjunctionFutureNT(Parse.decodeEither[T](str)))
 
   implicit def argonautListTUnmarshaller[T](implicit ev: DecodeJson[List[T]], fm: Materializer): Unmarshaller[HttpEntity, List[T]] =
     stringUnmarshaller
-      .flatMap(ec ⇒ fm ⇒ str ⇒ disjunctionFutureNT(Parse.decodeEither[List[T]](str)))
+      .flatMap(ec => fm => str => disjunctionFutureNT(Parse.decodeEither[List[T]](str)))
 
   private val disjunctionFutureNT: EitherL[String]#T ~> Future = new (EitherL[String]#T ~> Future) {
     def apply[A](fa: EitherL[String]#T[A]): Future[A] =
       fa.fold(
-        error ⇒ FF.failed(new Throwable(error) with NoStackTrace),
+        error => FF.failed(new Throwable(error) with NoStackTrace),
         FF.successful
       )
   }

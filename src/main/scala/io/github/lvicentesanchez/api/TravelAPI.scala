@@ -21,13 +21,19 @@ trait TravelAPI {
 object TravelAPI {
   def apply(context: ExecutionContext, materialiser: Materializer, travel: TravelModule): TravelAPI =
     new TravelAPI {
+      
       import ArgonautMarshallers._
       import Directives._
 
       implicit val e = context
       implicit val m = materialiser
 
-      override val timeTravel: Route = post(path("")(entity(as[User])(user ⇒ complete(travel.double(user)))))
+      override val timeTravel: Route =
+        post {
+          path("") {
+            entity(as[User]) { user => complete(travel.double(user)) }
+          }
+        }
 
       override val api: List[Route] = List(timeTravel)
     }

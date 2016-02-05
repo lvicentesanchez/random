@@ -3,7 +3,7 @@ package io.github.lvicentesanchez.marshalling
 import akka.http.scaladsl.marshalling.Marshaller
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import akka.stream.Materializer
-import scala.concurrent.ExecutionContext
+
 import scalaz.{ -\/, \/, \/- }
 
 trait ScalazMarshallers {

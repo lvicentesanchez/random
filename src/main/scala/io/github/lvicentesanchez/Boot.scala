@@ -1,36 +1,42 @@
 package io.github.lvicentesanchez
 
-import akka.actor.ActorSystem
+import akka.actor.{ ActorSystem, Terminated }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server._
-import akka.stream.scaladsl.{ Source, Sink, Flow }
 import akka.stream.{ ActorMaterializer, Materializer }
-import io.github.lvicentesanchez.marshalling.ArgonautMarshallers
-import io.github.lvicentesanchez.models.User
-import scala.concurrent.{ ExecutionContext, Future }
+import io.github.lvicentesanchez.api.TravelAPI
+import io.github.lvicentesanchez.modules.TravelModule
+
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.io.StdIn
 
-object Boot extends App with Directives with ArgonautMarshallers {
+object Boot extends App {
+
+  import RouteConcatenation._
+
   implicit val system: ActorSystem = ActorSystem("random")
   implicit val asynchronous: ExecutionContext = system.dispatcher
   implicit val materialiser: Materializer = ActorMaterializer()
 
+  val travelAPI: TravelAPI = TravelAPI(asynchronous, materialiser, TravelModule)
+
   val route: Route =
-    post {
-      path("") {
-        entity(as[User]) {
-          case User(name, age) ⇒ complete(User(name, age * 2))
-        }
-      }
-    }
+    travelAPI.api.reduceOption(_ ~ _).getOrElse(Directives.reject)
 
   val binding: Future[Http.ServerBinding] =
     Http().bindAndHandle(route, interface = "0.0.0.0", port = 9000)
 
+  System.out.println("Started!")
+
   StdIn.readLine()
 
-  binding.flatMap(_.unbind()).onComplete { _ ⇒
-    system.shutdown()
-    system.awaitTermination()
-  }
+  val terminated: Future[Terminated] =
+    for {
+      server ← binding
+      _ ← server.unbind()
+      result ← system.terminate()
+    } yield result
+
+  Await.result(terminated, Duration.Inf)
 }

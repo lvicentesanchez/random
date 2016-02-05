@@ -3,7 +3,7 @@ package io.github.lvicentesanchez.marshalling
 import akka.http.scaladsl.marshalling.{ Marshaller, PredefinedToResponseMarshallers }
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.{ PredefinedFromEntityUnmarshallers, Unmarshaller }
-import akka.http.scaladsl.util.{ FastFuture ⇒ FF }
+import akka.http.scaladsl.util.{ FastFuture => FF }
 import akka.stream.Materializer
 import argonaut._
 import io.github.lvicentesanchez.lambdas.EitherL
@@ -14,7 +14,7 @@ import scalaz.~>
 
 trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with PredefinedToResponseMarshallers {
   implicit def argonautJsonMarshaller(implicit ec: ExecutionContext): Marshaller[Json, RequestEntity] =
-    Marshaller.StringMarshaller.wrap(ContentTypes.`application/json`)(_.nospaces)
+    Marshaller.StringMarshaller.wrap(MediaTypes.`application/json`)(_.nospaces)
 
   implicit def argonautTMarshaller[T](implicit ec: ExecutionContext, ev: EncodeJson[T]): Marshaller[T, RequestEntity] =
     argonautJsonMarshaller.compose[T](ev(_))

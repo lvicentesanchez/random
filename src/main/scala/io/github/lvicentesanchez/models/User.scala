@@ -1,6 +1,7 @@
 package io.github.lvicentesanchez.models
 
-import argonaut._, Argonaut._
+import argonaut.Argonaut._
+import argonaut._
 
 case class User(name: String, age: Int)
 

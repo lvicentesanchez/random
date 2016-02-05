@@ -25,7 +25,7 @@ object RootBuild extends Build {
       jarName in assembly <<= (name, version) map ( (n, v) => "%s-%s.jar".format(n, v) )
     )
 
-  lazy val appName = "shall-be.more"
+  lazy val appName = "random"
 
   lazy val appVersion = "0.1.0"
 
@@ -42,7 +42,7 @@ object RootBuild extends Build {
 
   lazy val dependencies = Seq(
     "io.argonaut"       %% "argonaut"               % "6.1",
-    "com.typesafe.akka" %% "akka-http-experimental" % "2.0-M2",
+    "com.typesafe.akka" %% "akka-http-experimental" % "2.4.2-RC2",
     "org.scalaz"        %% "scalaz-core"            % "7.1.0"
   )
 
@@ -80,7 +80,7 @@ object RootBuild extends Build {
       .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, false)
       .setPreference(PreserveSpaceBeforeArguments, false)
       .setPreference(PreserveDanglingCloseParenthesis, true)
-      .setPreference(RewriteArrowSymbols, true)
+      .setPreference(RewriteArrowSymbols, false)
       .setPreference(SpaceBeforeColon, false)
       .setPreference(SpaceInsideBrackets, false)
       .setPreference(SpaceInsideParentheses, false)

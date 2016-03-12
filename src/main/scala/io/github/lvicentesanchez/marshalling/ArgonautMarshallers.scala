@@ -38,8 +38,7 @@ trait ArgonautMarshallers extends PredefinedFromEntityUnmarshallers with Predefi
     def apply[A](fa: EitherL[String]#T[A]): Future[A] =
       fa.fold(
         error => FF.failed(new Throwable(error) with NoStackTrace),
-        FF.successful
-      )
+        FF.successful)
   }
 }
 object ArgonautMarshallers extends ArgonautMarshallers

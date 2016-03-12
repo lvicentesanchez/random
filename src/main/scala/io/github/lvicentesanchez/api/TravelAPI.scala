@@ -21,7 +21,7 @@ trait TravelAPI {
 object TravelAPI {
   def apply(context: ExecutionContext, materialiser: Materializer, travel: TravelModule): TravelAPI =
     new TravelAPI {
-      
+
       import ArgonautMarshallers._
       import Directives._
 

@@ -9,7 +9,6 @@ import io.github.lvicentesanchez.modules.TravelModule
 
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, ExecutionContext, Future }
-import scala.io.StdIn
 
 object Boot extends App {
 
@@ -29,14 +28,16 @@ object Boot extends App {
 
   System.out.println("Started!")
 
-  StdIn.readLine()
+  Runtime.getRuntime.addShutdownHook(new Thread {
+    override def run(): Unit = {
+      val terminated: Future[Terminated] =
+        for {
+          server ← binding
+          _ ← server.unbind()
+          result ← system.terminate()
+        } yield result
 
-  val terminated: Future[Terminated] =
-    for {
-      server ← binding
-      _ ← server.unbind()
-      result ← system.terminate()
-    } yield result
-
-  Await.result(terminated, Duration.Inf)
+      Await.result(terminated, Duration.Inf)
+    }
+  })
 }
